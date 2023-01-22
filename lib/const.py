@@ -1,0 +1,6 @@
+import os
+
+CORS_ORIGINS = "*"
+AUTH_TOKEN_DURATION = 10**7
+SECRET_KEY = os.getenv("SECRET_KEY", "")
+DATABASE_URL = os.getenv("DATABASE_URL")
