@@ -23,7 +23,6 @@ services:
       - .:/climbing
     env_file:
       - devops/.env.localhost
-
     ports:
       - 8000:8000
       - 8088:8088

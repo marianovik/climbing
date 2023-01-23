@@ -1,12 +1,16 @@
 import datetime as dt
+import logging
 
 from itsdangerous import SignatureExpired, BadSignature
 from sqlalchemy import Column, DateTime, String, text, Boolean
+from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
 import db
 from db.core import Base
 from lib.auth import serializer
+
+LOG = logging.getLogger("db.user")
 
 
 class User(Base):
@@ -23,6 +27,8 @@ class User(Base):
     is_password_temporary = Column(
         Boolean, nullable=False, default=True, server_default="true"
     )
+
+    gyms = relationship("Gym", back_populates="owner")
 
     __tablename__ = "users"
 
@@ -44,7 +50,7 @@ class User(Base):
         return serializer.dumps({"user_id": self.id}).decode("ascii")
 
     def to_json(self) -> dict:
-        return {"username": self.username, "email": self.email}
+        return {"id": self.id, "username": self.username, "email": self.email}
 
     @classmethod
     def parse_token(cls, token):
@@ -52,5 +58,5 @@ class User(Base):
             loaded = serializer.loads(token)
         except (TypeError, SignatureExpired, BadSignature):
             loaded = None
-        user: db.User | None = loaded and db.User.get(loaded["user_id"])
+        user: db.User | None = loaded and db.User.query.get(loaded["user_id"])
         return user

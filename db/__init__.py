@@ -1,4 +1,5 @@
+from db.comment import Comment
 from db.db import *
-from db.geo_objs import GeoObject
-from db.gyms import Gym
+from db.geo_obj import GeoObject
+from db.gym import Gym
 from db.user import User
