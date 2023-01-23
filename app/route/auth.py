@@ -36,7 +36,7 @@ def sign_in():
     }
 
 
-@auth_router.route("/token/validate", methods=["POST"])
+@auth_router.route("/token/validate", methods=["GET"])
 @auth.login_required
 def validate_token():
     return {
@@ -59,7 +59,7 @@ def sign_up():
         password=password,
         username=username,
     ).add()
-
+    db.commit()
     return {
         "user": user.to_json(),
         "success": True,

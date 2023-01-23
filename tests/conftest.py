@@ -9,7 +9,7 @@ import db
 from app.core import create_app
 from db.core import engine
 
-TEST_DATABASE_URL = "postgresql://test_user:test_password@test_db:5432/test_db"
+TEST_DATABASE_URL = "postgresql://test_user:test_password@db:5432/test_db"
 
 
 @pytest.fixture(scope="session")
@@ -48,7 +48,7 @@ def create_db(connection):
 
 
 @pytest.fixture()
-async def setup_database(connection, create_db):
+def setup_database(connection, create_db):
     db.remove()
     if str(db.engine.url) != TEST_DATABASE_URL:
         raise RuntimeError("Test must be run in the test database!!!")
@@ -70,20 +70,15 @@ async def setup_database(connection, create_db):
         engine.dispose()
 
 
-@pytest.fixture()
-def test_app():
+@pytest.fixture(scope="session")
+def test_client():
     app = create_app()
     app.config.update(
         {
             "TESTING": True,
         }
     )
-    yield app
-
-
-@pytest.fixture()
-def test_client(test_app):
-    return test_app.test_client()
+    return app.test_client()
 
 
 @pytest.fixture()
