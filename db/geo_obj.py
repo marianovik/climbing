@@ -31,7 +31,7 @@ class GeoObject(
         nullable=True,
         index=True,
     )
-    parent = relationship("GeoObject")
+    parent = relationship("GeoObject", uselist=False)
     __tablename__ = "geo_objs"
     __table_args__ = (
         Index("geo_objs_code_type_uidx", "code", "obj_type", unique=True),

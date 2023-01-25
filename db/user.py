@@ -1,8 +1,7 @@
-import datetime as dt
 import logging
 
 from itsdangerous import SignatureExpired, BadSignature
-from sqlalchemy import Column, DateTime, String, text, Boolean
+from sqlalchemy import Column, String, Boolean
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -14,13 +13,7 @@ LOG = logging.getLogger("db.user")
 
 
 class User(Base):
-    updated_on = Column(
-        DateTime,
-        nullable=False,
-        default=dt.datetime.now(),
-        onupdate=dt.datetime.now(),
-        server_default=text("now()"),
-    )
+    logo = Column(String)
     username = Column(String)
     password_hash = Column(String)
     email = Column(String, unique=True)
@@ -50,7 +43,12 @@ class User(Base):
         return serializer.dumps({"user_id": self.id}).decode("ascii")
 
     def to_json(self) -> dict:
-        return {"id": self.id, "username": self.username, "email": self.email}
+        return {
+            "id": self.id,
+            "username": self.username,
+            "email": self.email,
+            "gyms": [gym.to_json() for gym in self.gyms],
+        }
 
     @classmethod
     def parse_token(cls, token):

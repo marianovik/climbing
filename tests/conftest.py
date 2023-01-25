@@ -1,5 +1,6 @@
 import logging
 import time
+from typing import Tuple
 
 import pytest
 from psycopg2 import OperationalError
@@ -71,7 +72,7 @@ def setup_database(connection, create_db):
 
 
 @pytest.fixture(scope="session")
-def test_client():
+def client():
     app = create_app()
     app.config.update(
         {
@@ -86,3 +87,29 @@ def test_user() -> db.User:
     return db.User(
         username="test", email="test@example.com", password="testtest1"
     ).add()
+
+
+@pytest.fixture()
+def test_geo() -> Tuple[db.GeoObject, db.GeoObject]:
+    country = db.GeoObject(name_en="Poland", obj_type="country", code="PL").add()
+    city = db.GeoObject(
+        name_en="Wroclaw", obj_type="city", code="WRO", parent=country
+    ).add()
+    return country, city
+
+
+@pytest.fixture()
+def test_gym(test_user, test_geo) -> db.Gym:
+    return db.Gym(
+        title="test",
+        description="test test",
+        owner=test_user,
+        address="Test Address 1",
+        city=test_geo[1],
+    ).add()
+
+
+@pytest.fixture()
+def test_token(test_user) -> str:
+    db.flush()
+    return test_user.generate_token()

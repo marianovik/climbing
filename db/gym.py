@@ -17,6 +17,12 @@ class Gym(
         String,
         nullable=False,
     )
+    description = Column(String)
+    logo_id = Column(
+        Integer,
+        ForeignKey("images.id", ondelete="SET NULL"),
+        nullable=True,
+    )
     city_id = Column(
         Integer,
         ForeignKey("geo_objs.id", ondelete="CASCADE"),
@@ -33,6 +39,7 @@ class Gym(
         foreign_keys="Gym.city_id",
     )
     owner = relationship("User", back_populates="gyms")
+    logo = relationship("Image")
 
     __tablename__ = "gyms"
 
@@ -43,6 +50,7 @@ class Gym(
             "address": f"{self.address}, "
             f"{self.city.name_en}, "
             f"{self.city.parent.name_en}",
+            "description": self.description,
         }
 
     @property

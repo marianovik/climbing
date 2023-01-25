@@ -5,10 +5,10 @@ import db
 LOG = logging.getLogger("test.auth")
 
 
-def test_sign_in(setup_database, test_client, test_user: db.User):
+def test_sign_in(setup_database, client, test_user: db.User):
     db.commit()
 
-    response = test_client.post(
+    response = client.post(
         "/auth/sign-in", json={"username": test_user.username, "password": "testtest1"}
     )
     assert response.json["user"] == test_user.to_json()
@@ -16,12 +16,12 @@ def test_sign_in(setup_database, test_client, test_user: db.User):
     assert test_user.parse_token(response.json["token"]).id == test_user.id
 
 
-def test_validate_token(setup_database, test_client, test_user: db.User):
+def test_validate_token(setup_database, client, test_user: db.User):
     db.commit()
-    response = test_client.post(
+    response = client.post(
         "/auth/sign-in", json={"username": test_user.username, "password": "testtest1"}
     )
-    response = test_client.get(
+    response = client.get(
         "/auth/token/validate",
         headers={"Authorization": f"Bearer {response.json['token']}"},
     )
@@ -30,10 +30,10 @@ def test_validate_token(setup_database, test_client, test_user: db.User):
 
 def test_sign_up(
     setup_database,
-    test_client,
+    client,
 ):
 
-    response = test_client.post(
+    response = client.post(
         "/auth/sign-up",
         json={
             "username": "user_2",

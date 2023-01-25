@@ -33,13 +33,21 @@ class Base:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+    id = Column(Integer, primary_key=True)
+
     created_on = Column(
         DateTime,
         nullable=False,
         default=dt.datetime.now(),
         server_default=text("now()"),
     )
-    id = Column(Integer, primary_key=True)
+    updated_on = Column(
+        DateTime,
+        nullable=False,
+        default=dt.datetime.now(),
+        onupdate=dt.datetime.now(),
+        server_default=text("now()"),
+    )
 
     @property
     def session(self):
