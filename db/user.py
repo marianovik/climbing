@@ -18,7 +18,7 @@ class User(Base):
     password_hash = Column(String)
     email = Column(String, unique=True)
     is_password_temporary = Column(
-        Boolean, nullable=False, default=True, server_default="true"
+        Boolean, nullable=False, default=False, server_default="True"
     )
 
     gyms = relationship("Gym", back_populates="owner")

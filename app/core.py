@@ -20,8 +20,9 @@ def hello_world():
 
 def create_app():
     if not database_exists(db.engine.url):
-        fixtures.generate()
         logging.warning("DB INIT ->")
+        fixtures.generate()
+        logging.warning("DB INIT -> READY")
     app.register_blueprint(route.search_router)
     app.register_blueprint(route.auth_router)
     app.register_blueprint(route.gym_router)

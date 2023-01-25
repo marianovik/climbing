@@ -35,18 +35,23 @@ def load_imgs():
 
 
 def generate():
-    imgs = load_imgs()
-    cities = (
+    imgs: list = load_imgs()
+    cities: list[db.User] = (
         db.Session.query(db.GeoObject).filter(db.GeoObject.obj_type == "city").all()
     )
+    users: list[db.User] = db.Session.query(db.User).all()
     for c in cities:
         for i in range(0, random.choice([1, 3, 6, 10])):
+            user = random.choice(users) if random.random() < 0.9 else None
             image = db.Image(**random.choice(imgs))
             db.Gym(
                 address=random.choice(address),
                 description=random.choice(description),
-                title=random.choice(name),
+                title=f"{random.choice(name)} owned by {user.username}"
+                if user
+                else random.choice(name),
                 city_id=c.id,
                 logo=image,
+                owner=user,
             ).add()
         db.commit()
