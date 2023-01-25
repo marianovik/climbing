@@ -1,9 +1,13 @@
+import logging
+
 from flask import Flask, jsonify
 from flask_cors import CORS
 from sqlalchemy.exc import NoResultFound
+from sqlalchemy_utils import database_exists
 
+import db
 from app import route
-from lib import const
+from lib import const, fixtures
 from lib.auth import auth
 
 app = Flask("climbing")
@@ -15,6 +19,9 @@ def hello_world():
 
 
 def create_app():
+    if not database_exists(db.engine.url):
+        fixtures.generate()
+        logging.warning("DB INIT ->")
     app.register_blueprint(route.search_router)
     app.register_blueprint(route.auth_router)
     app.register_blueprint(route.gym_router)

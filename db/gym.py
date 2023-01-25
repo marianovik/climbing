@@ -47,7 +47,10 @@ class Gym(
         return {
             "id": self.id,
             "title": self.title,
-            "address": f"{self.address}, "
+            "address": self.address,
+            "city": self.city.name_en,
+            "country": self.city.parent.name_en,
+            "full_address": f"{self.address}, "
             f"{self.city.name_en}, "
             f"{self.city.parent.name_en}",
             "description": self.description,
@@ -57,7 +60,7 @@ class Gym(
     def comments(self):
         return (
             db.Comment.query.filter(
-                db.Comment.owner_id == self.id, db.Comment.object_type == "Gym"
+                db.Comment.object_id == self.id, db.Comment.object_type == "Gym"
             )
             .order_by(db.Comment.created_on.desc())
             .all()

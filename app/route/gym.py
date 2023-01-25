@@ -67,9 +67,12 @@ def delete_gym(gym_id: int) -> dict:
 
 
 @gym_router.route("comment/<int:gym_id>", methods=["POST"])
+@auth.login_required
 def create_comment(gym_id: int) -> dict:
     gym: db.Gym = db.Gym.query.filter(db.Gym.id == gym_id).one()
-    comment: db.Comment = db.Comment(text=request.json["text"])
+    comment: db.Comment = db.Comment(text=request.json["text"]).add()
+    if user := getattr(g, "user", None):
+        comment.owner_id = user.id
     comment.object = gym
     db.commit()
     return comment.to_json()
@@ -92,7 +95,7 @@ def get_logo(gym_id: int):
 
 @gym_router.route("logo/<int:gym_id>", methods=["POST"])
 @auth.login_required
-def upload_logo(gym_id: int):
+def upload_logo(gym_id: int) -> dict:
     gym: db.Gym = db.Gym.query.filter(db.Gym.id == gym_id).one()
     if g.user.id != gym.owner_id:
         raise exceptions.Forbidden("Only owner can update a gym!")

@@ -18,8 +18,10 @@ def search_geo() -> list:
     filter_by = true()
     if q := args.get("q"):
         filter_by &= db.GeoObject.name_en.ilike(f"%{q}%")
-    if country_id := args.get("country"):
-        filter_by &= db.GeoObject.parent_id == country_id
+    if country := args.get("country"):
+        country_model = aliased(db.GeoObject)
+        query = query.join(country_model, country_model.id == db.GeoObject.parent_id)
+        filter_by &= country_model.name_en == country
     if types := args.get("objType"):
         filter_by &= db.GeoObject.obj_type.in_(types.split(","))
     res = query.filter(filter_by).order_by(db.GeoObject.name_en)
