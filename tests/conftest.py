@@ -1,5 +1,6 @@
 import logging
 import time
+from datetime import datetime, timedelta
 from typing import Tuple
 
 import pytest
@@ -10,7 +11,7 @@ import db
 from app.core import create_app
 from db.core import engine
 
-TEST_DATABASE_URL = "postgresql://test_user:test_password@db:5432/test_db"
+TEST_DATABASE_URL = "postgresql://test_user:test_password@test_db:5432/test_db"
 
 
 @pytest.fixture(scope="session")
@@ -106,6 +107,19 @@ def test_gym(test_user, test_geo) -> db.Gym:
         owner=test_user,
         address="Test Address 1",
         city=test_geo[1],
+    ).add()
+
+
+@pytest.fixture()
+def test_competition(test_user, test_gym) -> db.Competition:
+    return db.Competition(
+        title="Test Competition",
+        description="Test Description",
+        start=datetime.now(),
+        end=datetime.now() + timedelta(days=10),
+        gym=test_gym,
+        count=10,
+        owner=test_user,
     ).add()
 
 

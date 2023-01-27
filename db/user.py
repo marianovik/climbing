@@ -21,7 +21,18 @@ class User(Base):
     )
 
     gyms = relationship("Gym", back_populates="owner")
-    competitions = relationship("Gym", back_populates="owner")
+    competitions = relationship(
+        "Competition",
+        back_populates="owner",
+        order_by="desc(Competition.start)",
+    )
+    registered_on_competitions = relationship(
+        "Competition",
+        order_by="desc(Competition.start)",
+        secondary="participants",
+        primaryjoin="User.id == Participant.user_id",
+        secondaryjoin="Participant.competition_id == Competition.id",
+    )
 
     __tablename__ = "users"
 
@@ -48,6 +59,10 @@ class User(Base):
             "username": self.username,
             "email": self.email,
             "gyms": [gym.to_json() for gym in self.gyms],
+            "owned_competitions": [comp.to_json() for comp in self.competitions],
+            "registered_on_competitions": [
+                comp.to_json() for comp in self.registered_on_competitions
+            ],
         }
 
     @classmethod

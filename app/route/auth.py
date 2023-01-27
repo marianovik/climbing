@@ -12,7 +12,7 @@ from lib.auth import auth
 
 LOG = logging.getLogger("auth")
 
-auth_router = Blueprint("auth", __name__, url_prefix="api/auth")
+auth_router = Blueprint("auth", __name__, url_prefix="/api/auth")
 
 
 @auth_router.route("/sign-in", methods=["POST"])

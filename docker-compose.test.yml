@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+  test_db:
+    image: postgis/postgis:13-3.2
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=test_db
+      - POSTGRES_USER=test_user
+      - POSTGRES_PASSWORD=test_password
+    command:
+      postgres -c fsync=off -c synchronous_commit=off -c full_page_writes=off -c max_locks_per_transaction=1000
+
+  pytest:
+    build:
+      context: .
+      dockerfile: devops/flask.dockerfile
+    depends_on:
+      - test_db
+    environment:
+      - DATABASE_URL=postgresql://test_user:test_password@test_db:5432/test_db
+      - PYTHONDONTWRITEBYTECODE=1
+    volumes:
+      - .:/climbing
+    command:
+      - make
+      - test

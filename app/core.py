@@ -26,6 +26,7 @@ def create_app():
     app.register_blueprint(route.search_router)
     app.register_blueprint(route.auth_router)
     app.register_blueprint(route.gym_router)
+    app.register_blueprint(route.comp_router)
     auth.error_handler(lambda: {"error": "Unauthorized"})
     app.register_error_handler(
         NoResultFound, lambda e: (jsonify({"error": "Not found"}), 404)

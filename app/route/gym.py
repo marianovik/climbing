@@ -9,7 +9,7 @@ from lib.auth import auth
 
 LOG = logging.getLogger("gym")
 
-gym_router = Blueprint("gym", __name__, url_prefix="api/gym")
+gym_router = Blueprint("gym", __name__, url_prefix="/api/gym")
 
 
 @gym_router.route("/", methods=["POST"])
