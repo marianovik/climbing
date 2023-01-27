@@ -5,6 +5,8 @@ services:
     image: postgis/postgis:13-3.2
     ports:
       - 5432:5432
+    networks:
+      - my-proxy-net
     environment:
       - POSTGRES_DB=test_db
       - POSTGRES_USER=test_user
@@ -16,6 +18,8 @@ services:
     build:
       context: .
       dockerfile: devops/flask.dockerfile
+    networks:
+      - my-proxy-net
     depends_on:
       - db
     volumes:
@@ -33,5 +37,6 @@ volumes:
   db:
 
 networks:
-  default:
-    name: local
+  my-proxy-net:
+    external:
+      name: custom_network
