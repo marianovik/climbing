@@ -45,6 +45,7 @@ class Competition(
         secondary="participants",
         primaryjoin="Participant.competition_id == Competition.id",
         secondaryjoin="User.id == Participant.user_id",
+        overlaps="participants",
     )
 
     __tablename__ = "competitions"
@@ -87,8 +88,5 @@ class Participant(
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
     )
-
-    user = relationship("User")
-    competition = relationship("Competition")
 
     __tablename__ = "participants"

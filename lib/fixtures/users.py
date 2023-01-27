@@ -10,10 +10,13 @@ usernames = [
 
 
 def generate():
-    for u in usernames:
+    users = [
         db.User(
-            username=u,
+            username=u.replace(" ", "_"),
             email=f"{u.replace(' ', '_').lower()}@example.com",
             password="secretsecret",
         ).add()
+        for u in usernames
+    ]
     db.commit()
+    return users

@@ -24,9 +24,14 @@ services:
       - devops/.env.localhost
     ports:
       - 8000:8000
-      - 8088:8088
-      - 9944:9944
     command:
       - python
       - -m
       - app
+
+volumes:
+  db:
+
+networks:
+  default:
+    name: local

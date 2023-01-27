@@ -32,6 +32,7 @@ class User(Base):
         secondary="participants",
         primaryjoin="User.id == Participant.user_id",
         secondaryjoin="Participant.competition_id == Competition.id",
+        overlaps="participants,users",
     )
 
     __tablename__ = "users"
