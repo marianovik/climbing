@@ -13,7 +13,6 @@ LOG = logging.getLogger("db.user")
 
 
 class User(Base):
-    logo = Column(String)
     username = Column(String)
     password_hash = Column(String)
     email = Column(String, unique=True)
@@ -22,6 +21,7 @@ class User(Base):
     )
 
     gyms = relationship("Gym", back_populates="owner")
+    competitions = relationship("Gym", back_populates="owner")
 
     __tablename__ = "users"
 

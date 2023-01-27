@@ -43,6 +43,10 @@ class Gym(
 
     __tablename__ = "gyms"
 
+    @property
+    def full_address(self):
+        return f"{self.address}, {self.city.name_en}, {self.city.parent.name_en}"
+
     def to_json(self):
         return {
             "id": self.id,
@@ -50,17 +54,15 @@ class Gym(
             "address": self.address,
             "city": self.city.name_en,
             "country": self.city.parent.name_en,
-            "full_address": f"{self.address}, "
-            f"{self.city.name_en}, "
-            f"{self.city.parent.name_en}",
-            "description": self.description,
+            "full_address": self.full_address,
         }
 
     @property
     def comments(self):
         return (
             db.Comment.query.filter(
-                db.Comment.object_id == self.id, db.Comment.object_type == "Gym"
+                db.Comment.object_id == self.id,
+                db.Comment.object_type == self.__class__.__name__,
             )
             .order_by(db.Comment.created_on.desc())
             .all()

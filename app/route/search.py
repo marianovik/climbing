@@ -8,7 +8,7 @@ import db
 
 LOG = logging.getLogger("search")
 
-search_router = Blueprint("search", __name__, url_prefix="/search")
+search_router = Blueprint("search", __name__, url_prefix="api/search")
 
 
 @search_router.route("/geo", methods=["GET"])
