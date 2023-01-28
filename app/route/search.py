@@ -51,7 +51,7 @@ def search_gyms() -> list:
 @search_router.route("/comp", methods=["GET"])
 def search_comps() -> list:
     args: dict = request.args
-    query = db.Session.query(db.Gym)
+    query = db.Session.query(db.Competition)
     filter_by = true()
     if q := args.get("q"):
         filter_by &= db.Competition.title.ilike(f"%{q}%")
