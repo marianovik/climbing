@@ -46,3 +46,24 @@ def search_gyms() -> list:
             filter_by &= city_model.name_en == city
     res = query.filter(filter_by).order_by(db.Gym.title)
     return [i.to_json() for i in res.all()]
+
+
+@search_router.route("/comp", methods=["GET"])
+def search_comps() -> list:
+    args: dict = request.args
+    query = db.Session.query(db.Gym)
+    filter_by = true()
+    if q := args.get("q"):
+        filter_by &= db.Competition.title.ilike(f"%{q}%")
+    if args.get("city") or args.get("country"):
+        city_model = aliased(db.GeoObject)
+        query = query.join(db.Gym, db.Gym.id == db.Competition.gym_id)
+        query = query.join(city_model, city_model.id == db.Gym.city_id)
+        if country := args.get("country"):
+            country_model = aliased(db.GeoObject)
+            query = query.join(country_model, country_model.id == city_model.parent_id)
+            filter_by &= country_model.name_en == country
+        if city := args.get("city"):
+            filter_by &= city_model.name_en == city
+    res = query.filter(filter_by).order_by(db.Competition.title)
+    return [i.to_json() for i in res.all()]
