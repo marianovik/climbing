@@ -2,7 +2,7 @@ import logging
 
 from db.core import Session
 
-L = logging.getLogger("db.db")
+LOG = logging.getLogger("db.db")
 
 query = Session.query
 flush = Session.flush

@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 from sqlalchemy import Column, Integer, Text, Unicode
 from sqlalchemy import ForeignKey
@@ -41,4 +42,5 @@ class Comment(
             "id": self.id,
             "owner": getattr(self.owner, "username", "Guest"),
             "text": self.text,
+            "created_on": datetime.timestamp(self.created_on),
         }

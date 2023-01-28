@@ -1,4 +1,4 @@
-from flask import g
+from flask import g, Request
 from flask_httpauth import HTTPTokenAuth
 from itsdangerous import TimedJSONWebSignatureSerializer
 
@@ -17,3 +17,10 @@ def verify_token(token):
     user = db.User.parse_token(token)
     g.user = user
     return user
+
+
+def get_user_from_request(request: Request):
+    if getattr(g, "user", None):
+        return g.user
+    if "Authorization" in request.headers:
+        return db.User.parse_token(request.headers["Authorization"])

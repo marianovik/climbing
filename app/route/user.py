@@ -11,6 +11,7 @@ user_router = Blueprint("user", __name__, url_prefix="/api/user")
 
 
 @user_router.route("/", methods=["GET"])
+@auth.login_required
 def get_user() -> dict:
     return g.user.to_json()
 

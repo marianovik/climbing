@@ -1,4 +1,5 @@
 import random
+
 import db
 
 name = [
@@ -7,6 +8,8 @@ name = [
     "Bouldering",
     "Climb Up",
     "Boulderingowa Akademia",
+    "Level Up",
+    "Cool and climb",
 ]
 description = [
     "Indoor bouldering gym with a wide variety of courses",

@@ -21,9 +21,8 @@ def test_create_gym(
         json=data,
         headers={"Authorization": f"Bearer {test_token}"},
     )
-    print(response.text)
     gym = db.Gym.query.filter(db.Gym.title == "Test").one()
-    assert gym.to_json() == response.json
+    assert {**gym.to_json(), "is_owner": True} == response.json
 
 
 def test_get_gym(setup_database, client, test_gym):
@@ -31,7 +30,7 @@ def test_get_gym(setup_database, client, test_gym):
     response = client.get(
         f"/api/gym/{test_gym.id}",
     )
-    assert test_gym.to_json() == response.json
+    assert {**test_gym.to_json(), "is_owner": False} == response.json
 
 
 def test_update_gym(setup_database, client, test_gym, test_token):

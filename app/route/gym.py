@@ -5,11 +5,18 @@ from werkzeug import exceptions
 from werkzeug.utils import secure_filename
 
 import db
-from lib.auth import auth
+from lib.auth import auth, get_user_from_request
 
 LOG = logging.getLogger("gym")
 
 gym_router = Blueprint("gym", __name__, url_prefix="/api/gym")
+
+
+def with_user_fields(gym: db.Gym, user: db.User):
+    return {
+        **gym.to_json(),
+        "is_owner": bool(user and gym.owner_id == user.id),
+    }
 
 
 @gym_router.route("/", methods=["POST"])
@@ -26,12 +33,14 @@ def create_gym() -> dict:
     data["owner_id"] = g.user.id
     gym: db.Gym = db.Gym(**data).add()
     db.commit()
-    return gym.to_json()
+    return with_user_fields(gym, g.user)
 
 
 @gym_router.route("/<int:gym_id>", methods=["GET"])
 def get_gym(gym_id: int) -> dict:
-    return db.Gym.query.filter(db.Gym.id == gym_id).one().to_json()
+    return with_user_fields(
+        db.Gym.query.filter(db.Gym.id == gym_id).one(), get_user_from_request(request)
+    )
 
 
 @gym_router.route("/<int:gym_id>", methods=["PUT"])
@@ -52,7 +61,7 @@ def update_gym(gym_id: int) -> dict:
     for k, v in data.items():
         setattr(gym, k, v)
     db.commit()
-    return gym.to_json()
+    return with_user_fields(gym, g.user)
 
 
 @gym_router.route("/<int:gym_id>", methods=["DELETE"])

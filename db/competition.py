@@ -1,7 +1,7 @@
-import datetime
 import logging
+from datetime import datetime
 
-from sqlalchemy import Column, String, Integer, ForeignKey, Date, DateTime
+from sqlalchemy import Column, String, Integer, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
 import db
@@ -57,6 +57,9 @@ class Competition(
             "gym": self.gym.to_json(),
             "available_spots": self.count,
             "registered": len(self.participants),
+            "start": datetime.timestamp(self.start),
+            "end": datetime.timestamp(self.end),
+            "is_over": self.is_over,
         }
 
     @property
@@ -71,8 +74,8 @@ class Competition(
         )
 
     @property
-    def ended(self) -> bool:
-        return self.end <= datetime.datetime.now()
+    def is_over(self) -> bool:
+        return self.end <= datetime.now()
 
 
 class Participant(

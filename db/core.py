@@ -14,7 +14,7 @@ from sqlalchemy.ext import declarative
 
 from lib import const
 
-L = logging.getLogger("db.core")
+LOG = logging.getLogger("db.core")
 
 engine = create_engine(
     const.DATABASE_URL,

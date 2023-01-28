@@ -17,8 +17,8 @@ def test_create_comp(
     db.commit()
     data = {
         "title": "Test",
-        "end": datetime.datetime.now(),
-        "start": datetime.datetime.now(),
+        "start": datetime.datetime.timestamp(datetime.datetime.now()),
+        "end": datetime.datetime.timestamp(datetime.datetime.now()),
         "description": "Test Desc",
         "owner_id": test_user.id,
         "gym_id": test_gym.id,
@@ -28,9 +28,8 @@ def test_create_comp(
         json=data,
         headers={"Authorization": f"Bearer {test_token}"},
     )
-    print(response.text)
     gym = db.Competition.query.filter(db.Competition.title == "Test").one()
-    assert gym.to_json() == response.json
+    assert {**gym.to_json(), "is_owner": True, "is_registered": False} == response.json
 
 
 def test_get_comp(setup_database, client, test_competition):
@@ -38,7 +37,11 @@ def test_get_comp(setup_database, client, test_competition):
     response = client.get(
         f"/api/comp/{test_competition.id}",
     )
-    assert test_competition.to_json() == response.json
+    assert {
+        **test_competition.to_json(),
+        "is_owner": False,
+        "is_registered": False,
+    } == response.json
 
 
 def test_update_comp(setup_database, client, test_competition, test_token):
