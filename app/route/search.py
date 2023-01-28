@@ -55,10 +55,12 @@ def search_comps() -> list:
     filter_by = true()
     if q := args.get("q"):
         filter_by &= db.Competition.title.ilike(f"%{q}%")
-    if args.get("city") or args.get("country"):
+    if args.get("city") or args.get("country") or args.get("gym_id"):
         city_model = aliased(db.GeoObject)
         query = query.join(db.Gym, db.Gym.id == db.Competition.gym_id)
         query = query.join(city_model, city_model.id == db.Gym.city_id)
+        if gym_id := args.get("gym_id"):
+            filter_by &= db.Gym.id == gym_id
         if country := args.get("country"):
             country_model = aliased(db.GeoObject)
             query = query.join(country_model, country_model.id == city_model.parent_id)
