@@ -50,6 +50,7 @@ def generate(imgs: list, users: list):
                 logo=db.Image(**random.choice(imgs)).add(),
                 owner=user,
             ).add()
+            db.flush()
             [
                 db.Comment(
                     text=random.choice(comments), owner=random.choice(users), object=gym

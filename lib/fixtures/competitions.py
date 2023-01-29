@@ -44,6 +44,7 @@ def generate(imgs: list, users: list):
             count=0,
             users=users,
         ).add()
+        db.flush()
         [
             db.Comment(
                 text=random.choice(comments), owner=random.choice(users), object=comp_1
@@ -61,6 +62,7 @@ def generate(imgs: list, users: list):
             count=345,
             users=users,
         ).add()
+        db.flush()
         [
             db.Comment(
                 text=random.choice(comments), owner=random.choice(users), object=comp_2
@@ -77,6 +79,7 @@ def generate(imgs: list, users: list):
             end=datetime.datetime.now() + datetime.timedelta(days=18),
             count=674,
         ).add()
+        db.flush()
         [
             db.Comment(
                 text=random.choice(comments), owner=random.choice(users), object=comp_3
