@@ -20,7 +20,5 @@ def verify_token(token):
 
 
 def get_user_from_request(request: Request):
-    if getattr(g, "user", None):
-        return g.user
     if "Authorization" in request.headers:
-        return db.User.parse_token(request.headers["Authorization"])
+        return db.User.parse_token(request.headers["Authorization"].split()[1])

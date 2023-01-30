@@ -27,6 +27,7 @@ def create_gym() -> dict:
         city_id=data["city_id"],
         title=data["title"],
         description=data["description"],
+        address=data["address"],
         owner_id=g.user.id,
     ).add()
     db.commit()
@@ -47,7 +48,7 @@ def update_gym(gym_id: int) -> dict:
     if g.user.id != gym.owner_id:
         raise exceptions.Forbidden("Only owner can update a gym!")
     data: dict = request.json
-    for k in ["city_id", "title", "description"]:
+    for k in ["city_id", "title", "description", "address"]:
         if k in data:
             setattr(gym, k, data[k])
     db.commit()
