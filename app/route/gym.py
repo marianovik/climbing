@@ -47,16 +47,9 @@ def update_gym(gym_id: int) -> dict:
     if g.user.id != gym.owner_id:
         raise exceptions.Forbidden("Only owner can update a gym!")
     data: dict = request.json
-    if "city" in data:
-        city_name = data.pop("city")
-        data["city_id"] = (
-            db.Session.query(db.GeoObject.id)
-            .filter(db.GeoObject.name_en == city_name)
-            .one()
-            .id
-        )
-    for k, v in data.items():
-        setattr(gym, k, v)
+    for k in ["city_id", "title", "description"]:
+        if k in data:
+            setattr(gym, k, data[k])
     db.commit()
     return with_user_fields(gym, g.user)
 

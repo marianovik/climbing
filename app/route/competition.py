@@ -36,7 +36,9 @@ def create_comp() -> dict:
     gym: db.Gym = db.Gym.query.filter(db.Gym.id == data["gym_id"]).one()
     if gym.owner_id != g.user.id:
         raise exceptions.Forbidden("Cannot create competition for this gym!")
-    comp: db.Competition = db.Competition(**data).add()
+    comp: db.Competition = db.Competition(
+        gym_id=data["gym_id"], title=data["title"], description=data["description"]
+    ).add()
     comp.end = datetime.fromtimestamp(data["end"])
     comp.start = datetime.fromtimestamp(data["start"])
     if data["end"] < data["start"]:
@@ -62,16 +64,9 @@ def update_comp(comp_id: int) -> dict:
     if g.user.id != comp.owner_id:
         raise exceptions.Forbidden("Only owner can update a competition!")
     data: dict = request.json
-    if "city" in data:
-        city_name = data.pop("city")
-        data["city_id"] = (
-            db.Session.query(db.GeoObject.id)
-            .filter(db.GeoObject.name_en == city_name)
-            .one()
-            .id
-        )
-    for k, v in data.items():
-        setattr(comp, k, v)
+    for k in ["gym_id", "title", "description"]:
+        if k in data:
+            setattr(comp, k, data[k])
     if "end" in data:
         comp.end = datetime.fromtimestamp(data["end"])
     if "end" in data:
