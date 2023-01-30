@@ -23,15 +23,12 @@ def with_user_fields(gym: db.Gym, user: db.User):
 @auth.login_required
 def create_gym() -> dict:
     data: dict = request.json
-    city_name = data.pop("city")
-    data["city_id"] = (
-        db.Session.query(db.GeoObject.id)
-        .filter(db.GeoObject.name_en == city_name)
-        .one()
-        .id
-    )
-    data["owner_id"] = g.user.id
-    gym: db.Gym = db.Gym(**data).add()
+    gym: db.Gym = db.Gym(
+        city_id=data["city_id"],
+        title=data["title"],
+        description=data["description"],
+        owner_id=g.user.id,
+    ).add()
     db.commit()
     return with_user_fields(gym, g.user)
 
