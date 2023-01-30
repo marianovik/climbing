@@ -40,7 +40,7 @@ def create_comp() -> dict:
     comp.end = datetime.fromtimestamp(data["end"])
     comp.start = datetime.fromtimestamp(data["start"])
     if data["end"] < data["start"]:
-        return "End date cannot be earlier than start!", 400
+        raise exceptions.BadRequest("End date cannot be earlier than start!")
     db.commit()
     return with_user_fields(comp, g.user)
 
@@ -77,7 +77,7 @@ def update_comp(comp_id: int) -> dict:
     if "end" in data:
         comp.start = datetime.fromtimestamp(data["start"])
     if comp.end < comp.start:
-        return "End date cannot be earlier than start!", 400
+        raise exceptions.BadRequest("End date cannot be earlier than start!")
     db.commit()
     return with_user_fields(comp, g.user)
 
@@ -146,16 +146,20 @@ def upload_logo(comp_id: int) -> dict:
 @comp_router.route("/<int:comp_id>", methods=["POST"])
 @auth.login_required
 def register(comp_id: int) -> dict:
+    if db.Participant.query.filter(
+        db.Participant.competition_id == comp_id, db.Participant.user_id == g.user.id
+    ).first():
+        raise exceptions.BadRequest("You already registered!")
     comp: db.Competition = db.Competition.query.filter(
         db.Competition.id == comp_id
     ).one()
     if comp.is_over:
-        return "Competition is already ended!", 400
+        raise exceptions.BadRequest("Competition is already ended!")
 
     if comp.count < 1:
-        return "Registration is over!", 400
+        raise exceptions.BadRequest("Registration is over!")
     comp.count = comp.count - 1
-    db.Participant = db.Participant(competition_id=comp_id, user_id=g.user.id).add()
+    db.Participant(competition_id=comp_id, user_id=g.user.id).add()
     db.commit()
     return {"success": True}
 

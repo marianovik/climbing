@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 
-from sqlalchemy import Column, String, Integer, ForeignKey, DateTime
+from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, Index
 from sqlalchemy.orm import relationship
 
 import db
@@ -94,3 +94,8 @@ class Participant(
     )
 
     __tablename__ = "participants"
+    __table_args__ = (
+        Index(
+            "part_user_id_competition_id_uidx", "user_id", "competition_id", unique=True
+        ),
+    )
