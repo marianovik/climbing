@@ -51,6 +51,7 @@ class Gym(
         return {
             "id": self.id,
             "title": self.title,
+            "description": self.description,
             "address": self.address,
             "city": self.city.name_en,
             "country": self.city.parent.name_en,

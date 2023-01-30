@@ -54,6 +54,7 @@ class Competition(
         return {
             "id": self.id,
             "title": self.title,
+            "description": self.description,
             "gym": self.gym.to_json(),
             "available_spots": self.count,
             "registered": len(self.participants),
