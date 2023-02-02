@@ -28,8 +28,8 @@ def test_create_comp(
         json=data,
         headers={"Authorization": f"Bearer {test_token}"},
     )
-    gym = db.Competition.query.filter(db.Competition.title == "Test").one()
-    assert {**gym.to_json(), "is_owner": True, "is_registered": False} == response.json
+    comp = db.Competition.query.filter(db.Competition.title == "Test").one()
+    assert {**comp.to_json(), "is_owner": True, "is_registered": False} == response.json
 
 
 def test_get_comp(setup_database, client, test_competition):

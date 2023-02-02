@@ -13,7 +13,7 @@ def test_create_gym(
         "title": "Test",
         "description": "Test Desc",
         "owner_id": test_user.id,
-        "city": "Wroclaw",
+        "city_id": 2,
         "address": "Wroclaw",
     }
     response = client.post(

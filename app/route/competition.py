@@ -37,7 +37,10 @@ def create_comp() -> dict:
     if gym.owner_id != g.user.id:
         raise exceptions.Forbidden("Cannot create competition for this gym!")
     comp: db.Competition = db.Competition(
-        gym_id=data["gym_id"], title=data["title"], description=data["description"]
+        gym_id=data["gym_id"],
+        title=data["title"],
+        description=data["description"],
+        owner_id=g.user.id,
     ).add()
     comp.end = datetime.fromtimestamp(data["end"])
     comp.start = datetime.fromtimestamp(data["start"])
